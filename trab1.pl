@@ -103,6 +103,12 @@ scalepoly(P,F,P2) :- poly2list(P,P3), simpoly_list(P3,P4),
                      scalepoly2(P4,F,P5), simpoly_list(P5,P6), poly2list(P2,P6).
 
 
+addpoly(P1,P2,R) :- poly2list(P1,P1L), poly2list(P2,P2L), append(P1L,P2L,RL), simpoly_list(RL, RS), poly2list(R,RS). 
+
+append([], L, L).
+append([X|L1], L2, [X|L3]) :- append(L1, L2, L3). 
+
+
 
 
 
