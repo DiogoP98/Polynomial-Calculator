@@ -49,12 +49,26 @@ monomial(K*X) :- number(K), power(X), !.
 
 
 
+merge(X,Y,Z) :- term_to_atom(X,X1), term_to_atom(Y,Y1),
+                atom_string(X1,X2), atom_string(Y1,Y2),
+                string_chars(X2,X3), string_chars(Y2,Y3), append(X3,Y3,W2),
+                string_chars(W,W2), atom_string(Z1,W), term_to_atom(Z,Z1).
+
+list2poly2(M,[M]) :- monomial(M),!.
+list2poly2(-M,[-M]) :- monomial(M),!.
+list2poly2(P+M,[M|L]) :- monomial(M), split(M,K,_), K>0, 
+                         list2poly2(P,L), !.
+list2poly2(C,[M|L]) :- monomial(M), split(M,K,_), K<0, 
+                       list2poly2(P,L), merge(P,M,C), !.
+
 poly2list2(M,[M]) :- monomial(M), !.
 poly2list2(-M,[-M]) :- monomial(M), !.
 poly2list2(P+M,[M|L]) :- monomial(M), poly2list2(P,L), !.
-poly2list2(P-M,[-M|L]) :- monomial(M), poly2list2(P,L).
+poly2list2(P-M,[M2|L]) :- monomial(M), split(M,K,Po),
+                         K2 is -K, ((Po==ind,M2=K2);M2=K2*Po),
+                         poly2list2(P,L).
 
-poly2list(P,L) :- var(P), reverse(L,L2), poly2list2(P,L2),!.
+poly2list(P,L) :- var(P), reverse(L,L2), list2poly2(P,L2),!.
 poly2list(P,L) :- poly2list2(P,L2), reverse(L,L2),!.
 
 
@@ -67,6 +81,7 @@ poly2list(P,L) :- poly2list2(P,L2), reverse(L,L2),!.
 %Divide monomio em coeficiente e potencia (X^Y)
 split(N,N,ind) :- number(N), !.
 split(P,1,P) :- power(P), !.
+split(-P,-1,P) :- power(P), !.
 split(N*P,N,P).
 
 %Dada uma lista de monomios e uma potencia, retorna soma dos quoficientes
