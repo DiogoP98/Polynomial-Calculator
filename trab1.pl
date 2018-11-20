@@ -46,8 +46,6 @@ poly2list2(P-M,[M2|L]) :- monomial(M), split(M,K,Po),
 poly2list(P,L) :- var(P), reverse(L,L2), list2poly2(P,L2),!.
 poly2list(P,L) :- poly2list2(P,L2), reverse(L,L2),!.
 
-
-
 %Divides the monomial in coefficient and exponent (X^Y)
 split(N,N,ind) :- number(N), !.
 split(P,1,P) :- power(P), !.
@@ -91,28 +89,4 @@ append([], L, L).
 append([X|L1], L2, [X|L3]) :- append(L1, L2, L3).
 
 %It adds 2 polynomials and returns a third simplified polynomial that is the sum of the previous ones.
-addpoly(P1,P2,R) :- poly2list(P1,P1L), poly2list(P2,P2L), append(P1L,P2L,RL), simpoly_list(RL, RS), poly2list(R,RS). 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+addpoly(P1,P2,R) :- poly2list(P1,P1L), poly2list(P2,P2L), append(P1L,P2L,RL), simpoly_list(RL, RS), poly2list(R,RS).
