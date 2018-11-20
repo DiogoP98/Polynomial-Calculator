@@ -45,6 +45,7 @@ power(X^Y) :- pvar(X), integer(Y), Y>1, !.
 
 monomial(N) :- number(N), !.
 monomial(X) :- power(X), !.
+monomial(-X) :- power(X), !.
 monomial(K*X) :- number(K), power(X), !.
 
 
@@ -100,6 +101,7 @@ cutK([],[]).
 cutK([M|P],P2) :- split(M,N,_), N is 0, cutK(P,P2), !.
 cutK([M|P],[M2|P2]) :- split(M,N,Po), Po=ind, M2=N, cutK(P,P2), !.
 cutK([M|P],[M2|P2]) :- split(M,N,Po), N is 1, M2=Po, cutK(P,P2), !.
+cutK([M|P],[-M2|P2]) :- split(M,N,Po), N is -1, M2=Po, cutK(P,P2), !.
 cutK([M|P],[M|P2]) :- cutK(P,P2).
 
 simpoly_list(L,L2) :- joinExp(L,L3), cutK(L3,L2).
