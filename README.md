@@ -47,4 +47,8 @@ There are 5 main predicates:
   
                 ?- addpoly(2*x^2-5*x,6*x+2*x^3+2*x^2,X).
                 X = 4*x^2+x+2*x^3.
+ ## Authors
+ 
+   Diogo Pereira 201605323
    
+   Ricardo Pereira 201604583
