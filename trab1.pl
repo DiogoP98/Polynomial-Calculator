@@ -45,10 +45,11 @@ poly2list2(M,[M]) :- monomial(M), !.
 poly2list2(-M,[-M]) :- monomial(M), !.
 poly2list2(P+M,[M|L]) :- monomial(M), poly2list2(P,L), !.
 poly2list2(P-M,[M2|L]) :- monomial(M), split(M,K,Po), K2 is -K,
-                          ((Po==ind,M2=K2);(K2 is -1,merge(-,M,M2)); M2=K2*Po),
+                          ((Po==ind,M2=K2); (K2 is -1,merge(-,M,M2)); M2=K2*Po),
                           poly2list2(P,L).
 
 %main function to convert polynomials as expressions to polynomials as lists and vice-versa
+poly2list(0,[]) :- !.
 poly2list(P,L) :- var(P), reverse(L,L2), list2poly2(P,L2),!.
 poly2list(P,L) :- poly2list2(P,L2), reverse(L,L2),!.
 
