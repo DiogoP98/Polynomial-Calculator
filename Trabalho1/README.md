@@ -20,7 +20,7 @@ In swipl, first you need to import the program so that you can use the predicate
 The program handles 2 types of representations of polynomials: polynomial as an expression and polynomial as a list.
 There are 5 main predicates:
 
-   * poly2list/2 - transforms a polynomial as an expression into a polynomial as a list, and vice-versa. 
+   * poly2list/2 - transforms a polynomial into a list, and vice-versa. 
                    
                    ?- poly2list(X,[2,-x]).
                    X = 2-x.
@@ -38,7 +38,7 @@ There are 5 main predicates:
                   ?- simpoly(2*x^2+3*x^2+5*x^3,X).
                   X = 5*x^2+5*x^3.
                   
-   * scalepoly/3 - multiplies one polynomial as expression by a scalar resulting in a second polynomial. The first 2 arguments are assumed to be ground. The returned polynomial is already simplified.
+   * scalepoly/3 - that multiplies one polynomial as expression by a scalar resulting in a second polynomial. The first 2 arguments are assumed to be ground. The returned polynomial is already simplified.
    
                   ?- scalepoly(2*x^2+3*x^2+5*x^3,2,X).
                   X = 10*x^2+10*x^3.

@@ -65,10 +65,10 @@ joinExp([M|P],[M2|P2]) :- split(M,_,Po), sumE([M|P],Po,K,P3),
 
 %Auxiliar function to simpoly_list. Cuts useless constants and eliminates null monomials
 cutK([],[]).
-cutK([M|P],P2) :- split(M,N,_), (N is 0; N is (0.0)), cutK(P,P2), !.
+cutK([M|P],P2) :- split(M,N,_), N is 0, cutK(P,P2), !.
 cutK([M|P],[M2|P2]) :- split(M,N,Po), Po=ind, M2=N, cutK(P,P2), !.
-cutK([M|P],[M2|P2]) :- split(M,N,Po), (N is 1; N is (1.0)), M2=Po, cutK(P,P2), !.
-cutK([M|P],[-M2|P2]) :- split(M,N,Po), (N is -1; N is (-1.0)), M2=Po, cutK(P,P2), !.
+cutK([M|P],[M2|P2]) :- split(M,N,Po), N is 1, M2=Po, cutK(P,P2), !.
+cutK([M|P],[-M2|P2]) :- split(M,N,Po), N is -1, M2=Po, cutK(P,P2), !.
 cutK([M|P],[M|P2]) :- cutK(P,P2).
 
 %Simplifies a polynomial as a list
