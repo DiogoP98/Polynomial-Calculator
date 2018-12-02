@@ -171,20 +171,24 @@ number2string(0,"zero"):- !.
 number2string(X,S) :- var(S), number2string2(A,B), X >= A, !, X2 is X-A, ((X2 == 0, B2="");(number2string(X2,B3),string_concat(" ",B3,B2))), string_concat(B,B2,S), !.
 number2string(X,S) :- number2string2(A,B), string_concat(B,C,S), ((C == "", X2 is 0); (string_concat(" ", C2, C), number2string(X2,C2))), X is X2+A, !.
 
-text2poly(X,S) --> expr(S), {X = expr(S)}.
+text2poly(S,X) :- split_string(S," ","",S2), build(X,S2,[]), !.
+
+build(X) --> expr(X2), {X = X2}.
 
 expr(X) --> factor(X2), ["plus"], factor(X3), {X = X2+X3}.
 expr(X) --> factor(X2), ["minus"], factor(X3), {X = X2-X3}.
 expr(X) --> factor(X2), {X = X2}.
 
-factor(X) --> num(X2), {X = X2}.
+factor(X) --> num(X2), {number2string(X3,X2), X = X3}.
 factor(X) --> raised(X2), {X = X2}.
-factor(X) --> num(X2), ["times"], raised(X3), {X = X2*X3}.
+factor(X) --> num(X2), ["times"], raised(X3), {X = number2string(X2)*X3}.
 
-raised(X) --> {atom_string(Z,X), term_to_atom(X,Z)}.
-raised(X) --> pvars(X2), ["raised to"], num(X3) , {X = X2^X3}.
+raised(X) --> pvar(X2), {pvars(X2), X = X2}.
+raised(X) --> pvar(X2), ["raised to"], num(X3) , {pvars(X2), number2string(X4,X3), X = X2^X4}.
 
-num(X) --> {number2string(A,X), X is A}.
+pvar(X) --> [X].
+
+num(X) --> [X].
 
 
 
