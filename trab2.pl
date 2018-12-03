@@ -93,6 +93,8 @@ factor(X) --> num(X2), ["times"], raised(X3), {number2string(N,X2), X = N*X3}.
 
 raised(X) --> pvar(X2), {belongs(X2), atom_string(V,X2), X = V}.
 raised(X) --> pvar(X2), ["raised"], ["to"], num(X3) , {belongs(X2), atom_string(V,X2), number2string(N,X3), X = V^N}.
+raised(X) --> pvar(X2), ["squared"], {belongs(X2), atom_string(V,X2), X = V^2}.
+raised(X) --> pvar(X2), ["cubed"], {belongs(X2), atom_string(V,X2), X = V^3}.
 
 pvar(X) --> [X].
 
