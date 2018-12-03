@@ -79,7 +79,7 @@ number2string(X,S) :- number2string2(A,B), string_concat(B,C,S), ((C == "", X2 i
 
 belongs(X) :- variables(V), atom_string(X2,X), member(X2,V), !.
 
-text2poly(S,X) :- split_string(S," ","",S2), build(X,S2,[]), !.
+text2poly(S,P) :- split_string(S," ","",S2), build(P,S2,[]), !.
 
 build(X) --> expr(X2), {X = X2}.
 
@@ -100,6 +100,8 @@ pvar(X) --> [X].
 
 num(X) --> [X].
 
+
+polyplay :- writeln("Your operation:"), flush_output, read(X), (X \= "leave", text2poly(X,P), writeln(P), polyplay; X == "leave", writeln("Goodbye")). 
 
 
 
