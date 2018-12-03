@@ -82,6 +82,8 @@ belongs(X) :- variables(V), atom_string(X2,X), member(X2,V), !.
 text2poly(S,P) :- split_string(S," ","",S2), build(P,S2,[]), !.
 
 build(X) --> expr(X2), {X = X2}.
+build(X) --> expr(X2), ["plus"], expr(X3), {X = X2 + X3}.
+build(X) --> expr(X2), ["minus"], expr(X3), {X = X2 - X3}.
 
 expr(X) --> factor(X2), ["plus"], factor(X3), {X = X2+X3}.
 expr(X) --> factor(X2), ["minus"], factor(X3), {X = X2-X3}.
@@ -99,7 +101,6 @@ raised(X) --> pvar(X2), ["cubed"], {belongs(X2), atom_string(V,X2), X = V^3}.
 pvar(X) --> [X].
 
 num(X) --> [X].
-
 
 polyplay :- writeln("Your operation:"), flush_output, read(X), (X \= "leave", text2poly(X,P), writeln(P), polyplay; X == "leave", writeln("Goodbye")). 
 
