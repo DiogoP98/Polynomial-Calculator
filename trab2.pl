@@ -162,14 +162,14 @@ number2string(0,"zero"):- !.
 number2string(X,S) :- var(S), number2string2(A,B), X >= A, !, X2 is X-A, ((X2 == 0, B2="");(number2string(X2,B3),string_concat(" ",B3,B2))), string_concat(B,B2,S), !.
 number2string(X,S) :- number2string2(A,B), string_concat(B,C,S), ((C == "", X2 is 0); (string_concat(" ", C2, C), number2string(X2,C2))), X is X2+A, !.
 
-belongs(X) :- variables(V), atom_string(X2,X), member(X2,V), !.
+belongs(X) :- variables(V), (string(X) , atom_string(X2,X); X2 = X), member(X2,V), !.
 
 operation(S,P) :- split_string(S," ","",S2), opr(P,S2,[]).
 operation(S,P) :- text2poly(S,P).
 
 text2poly(S,P) :- split_string(S," ","",S2), build(P,S2,[]), !.
 
-opr(X) --> ["add"], build(X2), ["to"], build(X3), {addpoly(X2,X3,X4), X = X4}.
+opr(X) --> ["add"], build(X2), ["to"], build(X3), {addpoly(X2,X3,X4), simpoly(X4,X5), X = X5}.
 opr(X) --> ["simplify"], ["polynomial"], build(X2), {simpoly(X2, SP), X = SP}.
 
 build(X) --> expr(X2), {X = X2}.
