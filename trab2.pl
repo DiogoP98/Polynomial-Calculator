@@ -164,6 +164,9 @@ number2string(X,S) :- number2string2(A,B), string_concat(B,C,S), ((C == "", X2 i
 
 belongs(X) :- variables(V), (string(X) , atom_string(X2,X); X2 = X), member(X2,V), !.
 
+writeList([]).
+writeList([[X,Y]|L2]) :- write(X), write(" = "), writeln(Y), writeList(L2).
+
 operation(S,P) :- split_string(S," ","",S2), opr(P,S2,[]).
 operation(S,P) :- text2poly(S,P).
 
@@ -171,6 +174,8 @@ text2poly(S,P) :- split_string(S," ","",S2), build(P,S2,[]), !.
 
 opr(X) --> ["add"], build(X2), ["to"], build(X3), {addpoly(X2,X3,X4), simpoly(X4,X5), X = X5}.
 opr(X) --> ["simplify"], ["polynomial"], build(X2), {simpoly(X2, SP), X = SP}.
+opr(X) --> ["show"], build(X2), ["as"], pvar(X3), {write(X3), write("= "), assertz(polynomials(X3,X2)), X = X2}.
+opr(X) --> ["show"], ["stored"], ["polynomials"], {findall([ID,P], polynomials(ID,P),L), writeList(L), X = ""}.
 
 build(X) --> expr(X2), {X = X2}.
 build(X) --> expr(X2), ["plus"], expr(X3), {X = X2 + X3}.
@@ -193,7 +198,7 @@ pvar(X) --> [X].
 
 num(X) --> [X].
 
-polyplay :- writeln("Your operation:"), flush_output, read(X), (X \= "leave", operation(X,P), writeln(P), polyplay; X == "leave", writeln("Goodbye")). 
+polyplay :- writeln("Your operation:"), flush_output, read(X), ((X \= "leave", operation(X,P), writeln(P), polyplay); (X == "leave", retractall(polynomials(_,_)), writeln("Goodbye"))). 
 
 
 
