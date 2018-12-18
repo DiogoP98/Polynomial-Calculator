@@ -3,6 +3,7 @@
   Ricardo Pereira 201604583
 */
 
+:- dynamic(polynomials/2).
 
 %check if it a lonely variable or if it has an exponent
 power(X) :- belongs(X), !.
@@ -152,11 +153,15 @@ ten(90) --> ["ninety"].
 
 tnum(N) --> trinum(R),
             {N is R}.
+tnum(N) --> trinum(M), ["thousand"],
+            {N is M*1000}.
 tnum(N) --> trinum(M), ["thousand"], trinum(R),
             {N is M*1000+R}.
 
 trinum(N) --> twonum(DU),
               {N is DU}.
+trinum(N) --> digit(C), ["hundred"],
+              {N is C*100}.
 trinum(N) --> digit(C), ["hundred"], twonum(DU),
               {N is C*100+DU}.
 
@@ -168,9 +173,6 @@ twonum(N) --> teen(D),
               {N is D}.
 twonum(N) --> digit(U),
               {N is U}.
-
-concat([A],A).
-concat([A|B],C) :- concat(B,D), string_concat(A," ",A2), string_concat(A2,D,C).
 
 %number2string(N,S) :- var(S), phrase(tnum(N),S2), concat(S2,S), !.
 number2string(N,S) :- tnum(N,S,[]), !.
@@ -186,19 +188,23 @@ operation(S,P) :- text2poly(S,P).
 
 text2poly(S,P) :- split_string(S," ","",S2), build(P,S2,[]), !.
 
-polyNameFree(X) :- not(polynomials(X,_)) ; (write(X), writeln(" is used"),fail).
+polyNameUsed(X) :- polynomials(X,_), write(X), writeln(" is used").
 
 opr(X) --> ["add"], build(X2), ["to"], build(X3),
            {addpoly(X2,X3,X4), simpoly(X4,X5), X = X5}.
+opr(X) --> ["multiply"], num(X2), ["by"], build(X3),
+           {number2string(N,X2), scalepoly(X3,N,X4), simpoly(X4,X5), X = X5}.
 opr(X) --> ["simplify"], ["polynomial"], build(X2),
            {simpoly(X2, SP), X = SP}.
 opr(X) --> ["show"], build(X2), ["as"], pvar(X3),
-           {polyNameFree(X3), write(X3), write(" = "),
+           {polyNameUsed(X3), X=""; write(X3), write(" = "),
             simpoly(X2,X4), assertz(polynomials(X3,X4)), X = X4}.
 opr(X) --> ["show"], pvar(X2),
            {polynomials(X2,X),!, write(X2), write(" = ")}.
 opr(X) --> ["show"], ["stored"], ["polynomials"],
            {findall([ID,P], polynomials(ID,P),L), writeList(L), X = ""}.
+opr(X) --> ["forget"], pvar(X2),
+           {X = "", (retract(polynomials(X2,_)); writeln("It doesn't exists"))}.
 
 build(X) --> expr(X2), {X = X2}.
 
@@ -207,21 +213,18 @@ expr(X) --> term(X2), ["plus"], expr(X3),
 expr(X) --> term(X2), ["minus"], expr(X3),
             {X = X3-X2}.
 expr(X) --> term(X2),
-            {X = X2}.	
-
-term(X) --> factor(X2), ["times"], term(X3),
-            {X = X3*X2}.
-term(X) --> factor(X2),
             {X = X2}.
 
-factor(X) --> num(X2),
-              {number2string(X3,[X2]), X = X3}.
-factor(X) --> raised(X2),
-              {X = X2}.
-factor(X) --> num(X2), ["times"], raised(X3),
-              {number2string(N,[X2]), X = N*X3}.
-factor(X) --> num(X2), raised(X3),
-              {number2string(N,[X2]), X = N*X3}.
+term(X) --> num(X2),
+            {number2string(X3,X2), X = X3}.
+term(X) --> raised(X2),
+            {X = X2}.
+term(X) --> num(X2), ["times"], raised(X3),
+            {number2string(N,X2), X = N*X3}.
+term(X) --> num(X2), raised(X3),
+            {number2string(N,X2), X = N*X3}.
+term(P) --> [X],
+            {polynomials(X,P)}.
 
 raised(X) --> pvar(X2),
               {belongs(X2), atom_string(V,X2), X = V}.
@@ -234,15 +237,12 @@ raised(X) --> pvar(X2), ["cubed"],
 
 pvar(X) --> [X].
 
-num(X) --> [X].
+num(L) --> [X], {L = [X]}.
+num(L) --> [A], num(B), {append([A],B,L)}.
 
-polyplay :- writeln("Your operation:"), flush_output, read(X),
-            ((X \= "leave", operation(X,P), writeln(P), polyplay);
-            (X == "leave", retractall(polynomials(_,_)), writeln("Goodbye"))). 
+polyplay :- retractall(polynomials(_,_)), polyplay_aux.
 
-polynomials(id,1).
-
-
-
-
+polyplay_aux :- writeln("Your operation:"), flush_output, read(X),
+                ((X \= "leave", operation(X,P), (P=="";writeln(P)), polyplay_aux);
+                (X == "leave", writeln("Goodbye"))).
 
