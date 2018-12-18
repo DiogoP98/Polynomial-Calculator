@@ -117,64 +117,50 @@ variables([a,b,c,d,e,f,g,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,
 	wa,wb,wc,wd,we,wf,wg,wh,wi,wj,wk,wl,wm,wn,wo,wp,wq,wr,ws,wt,wu,wv,ww,wx,wy,wz,
 	xa,xb,xc,xd,xe,xf,xg,xh,xi,xj,xk,xl,xm,xn,xo,xp,xq,xr,xs,xt,xu,xv,xw,xx,xy,xz,
 	ya,yb,yc,yd,ye,yf,yg,yh,yi,yj,yk,yl,ym,yn,yo,yp,yq,yr,ys,yt,yu,yv,yw,yx,yy,yz,
-    za,zb,zc,zd,ze,zf,zg,zh,zi,zj,zk,zl,zm,zn,zo,zp,zq,zr,zs,zt,zu,zv,zw,zx,zy,zz]).
+	za,zb,zc,zd,ze,zf,zg,zh,zi,zj,zk,zl,zm,zn,zo,zp,zq,zr,zs,zt,zu,zv,zw,zx,zy,zz]).
 
-digit(0) --> [""].
-digit(1) --> ["one"].
-digit(2) --> ["two"].
-digit(3) --> ["three"].
-digit(4) --> ["four"].
-digit(5) --> ["five"].
-digit(6) --> ["six"].
-digit(7) --> ["seven"].
-digit(8) --> ["eight"].
-digit(9) --> ["nine"].
+number2string2(1000,"one thousand").
+number2string2(900,"nine hundred").
+number2string2(800,"eigth hundred").
+number2string2(700,"seven hundred").
+number2string2(600,"six hundred").
+number2string2(500,"five hundred").
+number2string2(400,"four hundred").
+number2string2(300,"three hundred").
+number2string2(200,"two hundred").
+number2string2(100,"one hundred").
+number2string2(90,"ninety").
+number2string2(80,"eighty").
+number2string2(70,"seventy").
+number2string2(60,"sixty").
+number2string2(50,"fifty").
+number2string2(40,"forty").
+number2string2(30,"thirty").
+number2string2(20,"twenty").
+number2string2(19,"nineteen").
+number2string2(18,"eighteen").
+number2string2(17,"seventeen").
+number2string2(16,"sixteen").
+number2string2(15,"fifteen").
+number2string2(14,"fourteen").
+number2string2(13,"thirteen").
+number2string2(12,"twelve").
+number2string2(11,"eleven").
+number2string2(10,"ten").
+number2string2(9,"nine").
+number2string2(8,"eight").
+number2string2(7,"seven").
+number2string2(6,"six").
+number2string2(5,"five").
+number2string2(4,"four").
+number2string2(3,"three").
+number2string2(2,"two").
+number2string2(1,"one").
+number2string2(0,"zero").
 
-teen(10) --> ["ten"].
-teen(11) --> ["eleven"].
-teen(12) --> ["twelve"].
-teen(13) --> ["thirteen"].
-teen(14) --> ["fourteen"].
-teen(15) --> ["fifteen"].
-teen(16) --> ["sixteen"].
-teen(17) --> ["seventeen"].
-teen(18) --> ["eighteen"].
-teen(19) --> ["nineteen"].
-
-ten(20) --> ["twenty"].
-ten(30) --> ["thirty"].
-ten(40) --> ["forty"].
-ten(50) --> ["fifty"].
-ten(60) --> ["sixty"].
-ten(70) --> ["seventy"].
-ten(80) --> ["eighty"].
-ten(90) --> ["ninety"].
-
-tnum(N) --> trinum(R),
-            {N is R}.
-tnum(N) --> trinum(M), ["thousand"], trinum(R),
-            {N is M*1000+R}.
-
-trinum(N) --> twonum(DU),
-              {N is DU}.
-trinum(N) --> digit(C), ["hundred"], twonum(DU),
-              {N is C*100+DU}.
-
-twonum(N) --> ten(D), digit(U),
-              {N is D+U}.
-twonum(N) --> ten(D),
-              {N is D}.
-twonum(N) --> teen(D),
-              {N is D}.
-twonum(N) --> digit(U),
-              {N is U}.
-
-concat([A],A).
-concat([A|B],C) :- concat(B,D), string_concat(A," ",A2), string_concat(A2,D,C).
-
-%number2string(N,S) :- var(S), phrase(tnum(N),S2), concat(S2,S), !.
-number2string(N,S) :- tnum(N,S,[]), !.
-
+number2string(0,"zero"):- !.
+number2string(X,S) :- var(S), number2string2(A,B), X >= A, !, X2 is X-A, ((X2 == 0, B2="");(number2string(X2,B3),string_concat(" ",B3,B2))), string_concat(B,B2,S), !.
+number2string(X,S) :- number2string2(A,B), string_concat(B,C,S), ((C == "", X2 is 0); (string_concat(" ", C2, C), number2string(X2,C2))), X is X2+A, !.
 
 belongs(X) :- variables(V), (string(X) , atom_string(X2,X); X2 = X), member(X2,V), !.
 
@@ -186,63 +172,32 @@ operation(S,P) :- text2poly(S,P).
 
 text2poly(S,P) :- split_string(S," ","",S2), build(P,S2,[]), !.
 
-polyNameFree(X) :- not(polynomials(X,_)) ; (write(X), writeln(" is used"),fail).
-
-opr(X) --> ["add"], build(X2), ["to"], build(X3),
-           {addpoly(X2,X3,X4), simpoly(X4,X5), X = X5}.
-opr(X) --> ["simplify"], ["polynomial"], build(X2),
-           {simpoly(X2, SP), X = SP}.
-opr(X) --> ["show"], build(X2), ["as"], pvar(X3),
-           {polyNameFree(X3), write(X3), write(" = "),
-            simpoly(X2,X4), assertz(polynomials(X3,X4)), X = X4}.
-opr(X) --> ["show"], pvar(X2),
-           {polynomials(X2,X),!, write(X2), write(" = ")}.
-opr(X) --> ["show"], ["stored"], ["polynomials"],
-           {findall([ID,P], polynomials(ID,P),L), writeList(L), X = ""}.
+opr(X) --> ["add"], build(X2), ["to"], build(X3), {addpoly(X2,X3,X4), simpoly(X4,X5), X = X5}.
+opr(X) --> ["simplify"], ["polynomial"], build(X2), {simpoly(X2, SP), X = SP}.
+opr(X) --> ["show"], build(X2), ["as"], pvar(X3), {write(X3), write("= "), assertz(polynomials(X3,X2)), X = X2}.
+opr(X) --> ["show"], ["stored"], ["polynomials"], {findall([ID,P], polynomials(ID,P),L), writeList(L), X = ""}.
 
 build(X) --> expr(X2), {X = X2}.
+build(X) --> expr(X2), ["plus"], expr(X3), {X = X2 + X3}.
+build(X) --> expr(X2), ["minus"], expr(X3), {X = X2 - X3}.
 
-expr(X) --> term(X2), ["plus"], expr(X3),
-            {X = X3+X2}.
-expr(X) --> term(X2), ["minus"], expr(X3),
-            {X = X3-X2}.
-expr(X) --> term(X2),
-            {X = X2}.	
+expr(X) --> factor(X2), ["plus"], factor(X3), {X = X2+X3}.
+expr(X) --> factor(X2), ["minus"], factor(X3), {X = X2-X3}.
+expr(X) --> factor(X2), {X = X2}.	
 
-term(X) --> factor(X2), ["times"], term(X3),
-            {X = X3*X2}.
-term(X) --> factor(X2),
-            {X = X2}.
+factor(X) --> num(X2), {number2string(X3,X2), X = X3}.
+factor(X) --> raised(X2), {X = X2}.
+factor(X) --> num(X2), ["times"], raised(X3), {number2string(N,X2), X = N*X3}.
 
-factor(X) --> num(X2),
-              {number2string(X3,[X2]), X = X3}.
-factor(X) --> raised(X2),
-              {X = X2}.
-factor(X) --> num(X2), ["times"], raised(X3),
-              {number2string(N,[X2]), X = N*X3}.
-factor(X) --> num(X2), raised(X3),
-              {number2string(N,[X2]), X = N*X3}.
-
-raised(X) --> pvar(X2),
-              {belongs(X2), atom_string(V,X2), X = V}.
-raised(X) --> pvar(X2), ["raised"], ["to"], num(X3),
-              {belongs(X2), atom_string(V,X2), number2string(N,X3), X = V^N}.
-raised(X) --> pvar(X2), ["squared"],
-              {belongs(X2), atom_string(V,X2), X = V^2}.
-raised(X) --> pvar(X2), ["cubed"],
-              {belongs(X2), atom_string(V,X2), X = V^3}.
+raised(X) --> pvar(X2), {belongs(X2), atom_string(V,X2), X = V}.
+raised(X) --> pvar(X2), ["raised"], ["to"], num(X3) , {belongs(X2), atom_string(V,X2), number2string(N,X3), X = V^N}.
+raised(X) --> pvar(X2), ["squared"], {belongs(X2), atom_string(V,X2), X = V^2}.
+raised(X) --> pvar(X2), ["cubed"], {belongs(X2), atom_string(V,X2), X = V^3}.
 
 pvar(X) --> [X].
 
 num(X) --> [X].
 
-polyplay :- writeln("Your operation:"), flush_output, read(X),
-            ((X \= "leave", operation(X,P), writeln(P), polyplay);
-            (X == "leave", retractall(polynomials(_,_)), writeln("Goodbye"))). 
-
-polynomials(id,1).
-
-
-
+polyplay :- writeln("Your operation:"), flush_output, read(X), ((X \= "leave", operation(X,P), writeln(P), polyplay); (X == "leave", retractall(polynomials(_,_)), writeln("Goodbye"))). 
 
 
