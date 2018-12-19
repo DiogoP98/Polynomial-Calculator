@@ -198,13 +198,13 @@ opr(X) --> ["simplify"], ["polynomial"], build(X2),
            {simpoly(X2, SP), X = SP}.
 opr(X) --> ["show"], build(X2), ["as"], pvar(X3),
            {polyNameUsed(X3), X=""; write(X3), write(" = "),
-            simpoly(X2,X4), assertz(polynomials(X3,X4)), X = X4}.
+            assertz(polynomials(X3,X2)), X = X2}.
 opr(X) --> ["show"], pvar(X2),
            {polynomials(X2,X),!, write(X2), write(" = ")}.
 opr(X) --> ["show"], ["stored"], ["polynomials"],
            {findall([ID,P], polynomials(ID,P),L), writeList(L), X = ""}.
 opr(X) --> ["forget"], pvar(X2),
-           {X = "", (retract(polynomials(X2,_)); writeln("It doesn't exists"))}.
+           {X = "", (retract(polynomials(X2,_)); writeln("It doesn't exist"))}.
 
 build(X) --> expr(X2), {X = X2}.
 
