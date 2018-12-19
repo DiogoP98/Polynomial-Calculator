@@ -240,9 +240,9 @@ pvar(X) --> [X].
 num(L) --> [X], {L = [X]}.
 num(L) --> [A], num(B), {append([A],B,L)}.
 
-polyplay :- retractall(polynomials(_,_)), polyplay_aux.
+polyplay :- retractall(polynomials(_,_)), polyplay_aux, !.
 
-polyplay_aux :- writeln("Your operation:"), flush_output, read(X),
+polyplay_aux :- writeln("Your operation:"), flush_output, read_string(user_input, "\n", " ", _, X),
                 ((X \= "leave", operation(X,P), (P=="";writeln(P)), polyplay_aux);
                 (X == "leave", writeln("Goodbye"))).
 
