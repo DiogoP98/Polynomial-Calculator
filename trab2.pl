@@ -174,75 +174,89 @@ twonum(N) --> teen(D),
 twonum(N) --> digit(U),
               {N is U}.
 
-%number2string(N,S) :- var(S), phrase(tnum(N),S2), concat(S2,S), !.
 number2string(N,S) :- tnum(N,S,[]), !.
+
 
 
 belongs(X) :- variables(V), (string(X) , atom_string(X2,X); X2 = X), member(X2,V), !.
 
+
+print([]).
+print([X|L]) :- X==".", writeln(""), !, print(L).
+print([X|L]) :- (X=="";write(X)) , print(L).
+
+
 writeList([]).
 writeList([[X,Y]|L2]) :- write(X), write(" = "), writeln(Y), writeList(L2).
 
-operation(S,P) :- split_string(S," ","",S2), opr(P,S2,[]).
-operation(S,P) :- text2poly(S,P).
-
-text2poly(S,P) :- split_string(S," ","",S2), build(P,S2,[]), !.
 
 polyNameUsed(X) :- polynomials(X,_), write(X), writeln(" is used").
 
-opr(X) --> ["add"], build(X2), ["to"], build(X3),
-           {addpoly(X2,X3,X4), simpoly(X4,X5), X = X5}.
-opr(X) --> ["multiply"], num(X2), ["by"], build(X3),
-           {number2string(N,X2), scalepoly(X3,N,X4), simpoly(X4,X5), X = X5}.
-opr(X) --> ["simplify"], ["polynomial"], build(X2),
-           {simpoly(X2, SP), X = SP}.
-opr(X) --> ["show"], build(X2), ["as"], pvar(X3),
-           {polyNameUsed(X3), X=""; write(X3), write(" = "),
-            assertz(polynomials(X3,X2)), X = X2}.
-opr(X) --> ["show"], pvar(X2),
-           {polynomials(X2,X),!, write(X2), write(" = ")}.
-opr(X) --> ["show"], ["stored"], ["polynomials"],
-           {findall([ID,P], polynomials(ID,P),L), writeList(L), X = ""}.
-opr(X) --> ["forget"], pvar(X2),
-           {X = "", (retract(polynomials(X2,_)); writeln("It doesn't exist"))}.
+group(L) --> [X], {L = [X]}.
+group(L) --> [A], group(B), {append([A],B,L)}.
 
-build(X) --> expr(X2), {X = X2}.
 
-expr(X) --> term(X2), ["plus"], expr(X3),
-            {X = X3+X2}.
-expr(X) --> term(X2), ["minus"], expr(X3),
-            {X = X3-X2}.
-expr(X) --> term(X2),
-            {X = X2}.
 
-term(X) --> num(X2),
-            {number2string(X3,X2), X = X3}.
-term(X) --> raised(X2),
-            {X = X2}.
-term(X) --> num(X2), ["times"], raised(X3),
-            {number2string(N,X2), X = N*X3}.
-term(X) --> num(X2), raised(X3),
-            {number2string(N,X2), X = N*X3}.
+start(S) :- split_string(S," ","",S2), list(S2,[]), !.
+
+
+list --> group(L1), ["and"], {parse(L,L1,[]), print(L)}, list.
+list --> parse(L), {print(L)}.
+
+
+parse(L) --> ["show"], ["variables"],
+             {findall([ID,P], polynomials(ID,P),L1), writeList(L1), L=[""]}.
+parse(L) --> ["forget"], [ID],
+             {retract(polynomials(ID,_)), L=[""];
+             append(["It doesn't exists"],["."],L)}.
+parse(L) --> cmd(R), ["as"], [ID],
+             {polyNameUsed(ID), !; assertz(polynomials(ID,R)),
+             append([ID],[" = "],L1), append(L1,[R],L2), append(L2,["."],L), !}.
+parse(L) --> cmd(R),
+             {append([R],["."],L), !}.
+
+
+cmd(X) --> ["show"], expr(X).
+cmd(X) --> ["simplify"], expr(X1),
+           {simpoly(X1,X)}.
+cmd(X) --> ["add"], expr(X1), ["to"], expr(X2),
+           {addpoly(X1,X2,X)}.
+cmd(X) --> ["multiply"], group(K), ["by"], expr(X1),
+           {number2string(N,K), scalepoly(X1,N,X)}.
+
+
+expr(X) --> term(X1), ["plus"], expr(X2),
+            {X = X2+X1}.
+expr(X) --> term(X1), ["minus"], expr(X2),
+            {X = X2-X1}.
+expr(X) --> term(X).
+
+
+term(X) --> group(X1), ["times"], raised(X2),
+            {number2string(N,X1), X = N*X2}.
+term(X) --> group(X1), raised(X2),
+            {number2string(N,X1), X = N*X2}.
+term(X) --> raised(X).
+term(X) --> group(X1),
+            {number2string(X,X1)}.
 term(P) --> [X],
             {polynomials(X,P)}.
 
-raised(X) --> pvar(X2),
-              {belongs(X2), atom_string(V,X2), X = V}.
-raised(X) --> pvar(X2), ["raised"], ["to"], num(X3),
+
+raised(X) --> [X2], ["raised"], ["to"], group(X3),
               {belongs(X2), atom_string(V,X2), number2string(N,X3), X = V^N}.
-raised(X) --> pvar(X2), ["squared"],
+raised(X) --> [X2], ["squared"],
               {belongs(X2), atom_string(V,X2), X = V^2}.
-raised(X) --> pvar(X2), ["cubed"],
+raised(X) --> [X2], ["cubed"],
               {belongs(X2), atom_string(V,X2), X = V^3}.
+raised(X) --> [X2],
+              {belongs(X2), atom_string(V,X2), X = V}.
 
-pvar(X) --> [X].
 
-num(L) --> [X], {L = [X]}.
-num(L) --> [A], num(B), {append([A],B,L)}.
 
 polyplay :- retractall(polynomials(_,_)), polyplay_aux, !.
 
 polyplay_aux :- writeln("Your operation:"), flush_output, read_string(user_input, "\n", " ", _, X),
-                ((X \= "leave", operation(X,P), (P=="";writeln(P)), polyplay_aux);
+                ((X \= "leave", start(X), polyplay_aux);
                 (X == "leave", writeln("Goodbye"))).
 
