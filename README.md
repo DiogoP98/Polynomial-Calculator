@@ -38,12 +38,12 @@ There are 2 main predicates:
    
             ?- polyplay.
             Your operation:
-            |: show two times x as P1 and show five times x as P2
+            |: show two times x as P1 and show five times x plus five times x as P2
             P1 = 2*x
-            P2 = 5*x
+            P2 = 5*x+5*x
             Your operation:
-            |: simplify two times x cubed plus three times x raised to three plus five
-            5+5*x^3
+            |: simplify P2
+            10*x
             Your operation:
             |: add two times x squared to five times x raised to two plus five times y
             7*x^2+5*y
@@ -66,7 +66,8 @@ There are 2 main predicates:
             |: leave
             Goodbye
             true.
-                          
+      
+      There is a built in feature that shows all the informations about the operations you can do, which can be accessed by typing 'help'. To leave just type 'leave'.           
                           
    This last predicate uses the following auxiliar predicates:
                           

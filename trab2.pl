@@ -88,8 +88,6 @@ append([X|L1], L2, [X|L3]) :- append(L1, L2, L3).
 addpoly(P1,P2,R) :- poly2list(P1,P1L), poly2list(P2,P2L), append(P1L,P2L,RL), simpoly_list(RL, RS), poly2list(R,RS).
 
 
-
-
 %----------------------Parte 2-------------------------------------
 
 
@@ -167,7 +165,7 @@ trinum(N) --> twonum(DU),
               {N is DU}.
 trinum(N) --> digit(C), ["hundred"],
               {N is C*100}.
-trinum(N) --> digit(C), ["hundred"], twonum(DU),
+trinum(N) --> digit(C), ["hundred"], ["and"], twonum(DU),
               {N is C*100+DU}.
 
 %Generates a number between 0 and 99
@@ -199,7 +197,7 @@ writeList([]).
 writeList([[ID,Poly]|List]) :- write(ID), write(" = "), writeln(Poly), writeList(List).
 
 %In case a variable is already in memory, it prints an error
-polyNameUsed(ID) :- polynomials(ID,_), write(ID), writeln(" is used").
+polyNameUsed(ID) :- polynomials(ID,_), write(ID), writeln(" is alreaady being used").
 
 group(L) --> [X], {L = [X]}.
 group(L) --> [A], group(B), {append([A],B,L)}.
@@ -260,9 +258,30 @@ raised(Term) --> [VarS],
               {belongs(VarS), atom_string(Var,VarS), Term = Var}.
 
 
-polyplay :- retractall(polynomials(_,_)), polyplay_aux, !.
+polyplay :- retractall(polynomials(_,_)), print_welcome, polyplay_aux, !.
 
 polyplay_aux :- writeln("Your operation:"), flush_output, read_string(user_input, "\n", " ", _, Input),
                 ((Input \= "leave", start(Input), polyplay_aux);
+                (Input == "help", print_help, polyplay_aux);
                 (Input == "leave", writeln("Goodbye"))).
+
+print_welcome :- write('\e[H\e[2J'), 
+                writeln("Welcome to this wonderful polynomial calculator"),
+                writeln(""),
+                writeln("If you need help just type: 'help'"),
+                writeln("If you need to leave, just type: 'leave'"),
+                writeln(""),
+                writeln("Hope you enjoy it!"),
+                writeln("").
+
+print_help :- writeln("Manual:"),
+              writeln("   -show P: shows the polynomial given as output."),
+              writeln("   -simplify P: simplifies polynomial P and prints it."),
+              writeln("   -add P1 to P2: adds P1 to P2 and prints the result."),
+              writeln("   -multiply K by P: multiplies K by P and prints the result."),
+              writeln("   -show C as S: assigns C to S and prints S = C, where C can be any of the above operations."),
+              writeln("   -forget S: eliminates S from memory."),
+              writeln("   -show polynomials: shows all polynomials stored in memory"),
+              writeln(""),
+              writeln("").
 
