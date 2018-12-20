@@ -54,7 +54,7 @@ There are 2 main predicates:
             |: show ten as P1
             P1 is used
             Your operation:
-            |: show variables
+            |: show polynomials
             P1 = 2*x
             P2 = 5*x
             Your operation:

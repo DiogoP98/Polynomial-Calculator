@@ -211,7 +211,7 @@ list --> group(L1), ["and"], {parse(L,L1,[]), print(L)}, list.
 list --> parse(L), {print(L)}.
 
 %Part of the grammar that identifies the type of operation
-parse(L) --> ["show"], ["variables"],
+parse(L) --> ["show"], ["polynomials"],
              {findall([ID,Poly], polynomials(ID,Poly),L1), writeList(L1), L=[""]}.
 parse(L) --> ["forget"], [ID],
              {retract(polynomials(ID,_)), L=[""];
@@ -258,7 +258,6 @@ raised(Term) --> [VarS], ["cubed"],
               {belongs(VarS), atom_string(Var,VarS), Term = Var^3}.
 raised(Term) --> [VarS],
               {belongs(VarS), atom_string(Var,VarS), Term = Var}.
-
 
 
 polyplay :- retractall(polynomials(_,_)), polyplay_aux, !.
