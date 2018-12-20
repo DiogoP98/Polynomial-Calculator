@@ -26,41 +26,41 @@ There are 2 main predicates:
           ?- text2poly("two times x plus five plus ten times x squared",X).
           X = 10*x^2+5+2*x.
      
-   * polyplay/0 - Creates a new input stream. It does every kind of operation:
-      * P - prints the given polynomial P.
+   * polyplay/0 - Creates a new input stream. It does every kind of operation
+   (S - name of polynomial, P - polynomial as string or name (if stored), K integer as string):
+      * show P - prints the polynomial P.
       * simplify P - prints the simplification of P.
       * add P1 to P2 - prints the simplified sum of P1 with P2.
       * multiply K by P - prints the polynomial resulting from the multiplication of P by K.
-      * show P as S - stores any of the above operations in memory and assigns it a variable.
-      * show S - prints variable S if it is stored in memory and the polynomial assigned to it.
+      * C as S - stores any of the above operations C in memory and assigns it a variable.
       * forget S - removes variable S from memory.
       * show polynomials - shows every variable stored in memory.
    
             ?- polyplay.
             Your operation:
-            |: show two times x as P1 and show five times x plus five times x as P2
+            |: show two times x as P1 and show five times x plus five times x as P2 .
             P1 = 2*x
             P2 = 5*x+5*x
             Your operation:
-            |: simplify P2
+            |: simplify P2 .
             10*x
             Your operation:
-            |: add two times x squared to five times x raised to two plus five times y
+            |: add two times x squared to five times x raised to two plus five times y .
             7*x^2+5*y
             Your operation:
-            |: multiply ten by twenty five times x plus five
+            |: multiply ten by twenty five times x plus five .
             50+250*x
             Your operation:
-            |: show ten as P1
+            |: show ten as P1 .
             P1 is used
             Your operation:
-            |: show polynomials
+            |: show polynomials .
             P1 = 2*x
             P2 = 5*x+5*x
             Your operation:
-            |: forget P1
+            |: forget P1 .
             Your operation:
-            |: show variables
+            |: show polynomials .
             P2 = 5*x+5*x
             Your operation:
             |: leave

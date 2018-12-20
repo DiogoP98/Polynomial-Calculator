@@ -196,7 +196,7 @@ writeList([]).
 writeList([[ID,Poly]|List]) :- write(ID), write(" = "), writeln(Poly), writeList(List).
 
 %In case a variable is already in memory, it prints an error
-polyNameUsed(ID) :- polynomials(ID,_), write(ID), writeln(" is alreaady being used").
+polyNameUsed(ID) :- polynomials(ID,_), write(ID), writeln(" is already being used").
 
 group(L) --> [X], {L = [X]}.
 group(L) --> [A], group(B), {append([A],B,L)}.
@@ -216,7 +216,9 @@ parse(L) --> ["forget"], [ID],
              L="It doesn't exist"}.
 parse(L) --> cmd(Poly), ["as"], [ID],
              {polyNameUsed(ID), !; assertz(polynomials(ID,Poly)),
-             string_concat(ID," = ",L1), string_concat(L1,Poly,L)}.
+             string_concat(ID," = ",L1), (string(Poly),Poly2=Poly;
+             term_to_atom(Poly,A),atom_string(A,Poly2)),
+             string_concat(L1,Poly2,L)}.
 parse(L) --> cmd(Poly),
              {L = Poly}.
 
