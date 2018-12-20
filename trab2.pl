@@ -210,10 +210,11 @@ list --> parse(L), {print(L)}.
 
 %Part of the grammar that identifies the type of operation
 parse(L) --> ["show"], ["polynomials"],
-             {findall([ID,Poly], polynomials(ID,Poly),L1), writeList(L1), L=[""]}.
+             {(findall([ID,Poly], polynomials(ID,Poly),L1), (L1 = [], writeln("No polynomials stored in memory."), writeln("");
+             writeList(L1), L=[""]))}.
 parse(L) --> ["forget"], [ID],
              {retract(polynomials(ID,_)), L=[""];
-             append(["It doesn't exists"],["."],L)}.
+             append(["It doesn't exist"],["."],L)}.
 parse(L) --> cmd(Poly), ["as"], [ID],
              {polyNameUsed(ID), !; assertz(polynomials(ID,Poly)),
              append([ID],[" = "],L1), append(L1,[Poly],L2), append(L2,["."],L), !}.
