@@ -38,38 +38,30 @@ There are 2 main predicates:
    
             ?- polyplay.
             Your operation:
-            |: two times x cubed plus five times x raised to two
-            5*x^2+2*x^3
+            |: show two times x as P1 and show five times x as P2
+            P1 = 2*x
+            P2 = 5*x
             Your operation:
-            |: simplify polynomial five plus twenty one
-            26
+            |: simplify two times x cubed plus three times x raised to three plus five
+            5+5*x^3
             Your operation:
-            |: add two times x to five times x plus two
-            7*x+2
+            |: add two times x squared to five times x raised to two plus five times y
+            7*x^2+5*y
             Your operation:
-            |: multiply five by five times x plus ten times y
-            50*y+25*x
+            |: multiply ten by twenty five times x plus five
+            50+250*x
             Your operation:
-            |: show two plus five times x as P1
-            P1 = 5*x+2
-            Your operation:
-            |: show two as P1
+            |: show ten as P1
             P1 is used
             Your operation:
-            |: show P1
-            P1 = 5*x+2
-            Your operation:
-            |: show two times x plus five times y as P2
-            P2 = 5*y+2*x
-            Your operation:
-            |: show stored polynomials
-            P1 = 5*x+2
-            P2 = 5*y+2*x
+            |: show variables
+            P1 = 2*x
+            P2 = 5*x
             Your operation:
             |: forget P1
             Your operation:
-            |: show stored polynomials
-            P2 = 5*y+2*x
+            |: show variables
+            P2 = 5*x
             Your operation:
             |: leave
             Goodbye
