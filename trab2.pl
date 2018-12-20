@@ -165,7 +165,7 @@ trinum(N) --> twonum(DU),
               {N is DU}.
 trinum(N) --> digit(C), ["hundred"],
               {N is C*100}.
-trinum(N) --> digit(C), ["hundred"], ["and"], twonum(DU),
+trinum(N) --> digit(C), ["hundred"], twonum(DU),
               {N is C*100+DU}.
 
 %Generates a number between 0 and 99
@@ -188,9 +188,8 @@ belongs(VarS) :- variables(List), (string(VarS) , atom_string(Var,VarS); Var = V
 text2poly(String,Poly) :- split_string(String," ","",List), expr(Poly,List,[]), !.
 
 %Prints the list of operations given by the user's input
-print([]).
-print([Op|List]) :- Op==".", writeln(""), !, print(List).
-print([Op|List]) :- (Op=="";write(Op)) , print(List).
+print("").
+print(S) :- writeln(S).
 
 %Pritns the list of variables stored in memory
 writeList([]).
@@ -206,20 +205,20 @@ start(String) :- split_string(String," ","",ListS), list(ListS,[]), !.
 
 %Generates the list of operations
 list --> group(L1), ["and"], {parse(L,L1,[]), print(L)}, list.
-list --> parse(L), {print(L)}.
+list --> group(L1), ["."], {parse(L,L1,[]), print(L)}.
 
 %Part of the grammar that identifies the type of operation
 parse(L) --> ["show"], ["polynomials"],
              {(findall([ID,Poly], polynomials(ID,Poly),L1), (L1 = [], writeln("No polynomials stored in memory."), writeln("");
-             writeList(L1), L=[""]))}.
+             writeList(L1), L=""))}.
 parse(L) --> ["forget"], [ID],
-             {retract(polynomials(ID,_)), L=[""];
-             append(["It doesn't exist"],["."],L)}.
+             {retract(polynomials(ID,_)), L="";
+             L="It doesn't exist"}.
 parse(L) --> cmd(Poly), ["as"], [ID],
              {polyNameUsed(ID), !; assertz(polynomials(ID,Poly)),
-             append([ID],[" = "],L1), append(L1,[Poly],L2), append(L2,["."],L), !}.
+             string_concat(ID," = ",L1), string_concat(L1,Poly,L)}.
 parse(L) --> cmd(Poly),
-             {append([Poly],["."],L), !}.
+             {L = Poly}.
 
 %Part of the grammar that identifies the type of operation within the operations with polynomials
 cmd(Poly) --> ["show"], expr(Poly).
