@@ -92,35 +92,37 @@ addpoly(P1,P2,R) :- poly2list(P1,P1L), poly2list(P2,P2L), append(P1L,P2L,RL), si
 
 %----------------------Parte 2-------------------------------------
 
+
+%Group of acceptable variable names
 variables([a,b,c,d,e,f,g,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,
-	aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az,
-	ba,bb,bc,bd,be,bf,bg,bh,bi,bj,bk,bl,bm,bn,bo,bp,bq,br,bs,bt,bu,bv,bw,bx,by,bz,
-	ca,cb,cc,cd,ce,cf,cg,ch,ci,cj,ck,cl,cm,cn,co,cp,cq,cr,cs,ct,cu,cv,cw,cx,cy,cz,
-	da,db,dc,dd,de,df,dg,dh,di,dj,dk,dl,dm,dn,do,dp,dq,dr,ds,dt,du,dv,dw,dx,dy,dz,
-	ea,eb,ec,ed,ee,ef,eg,eh,ei,ej,ek,el,em,en,eo,ep,eq,er,es,et,eu,ev,ew,ex,ey,ez,
-	fa,fb,fc,fd,fe,ff,fg,fh,fi,fj,fk,fl,fm,fn,fo,fp,fq,fr,fs,ft,fu,fv,fw,fx,fy,fz,
-	ga,gb,gc,gd,ge,gf,gg,gh,gi,gj,gk,gl,gm,gn,go,gp,gq,gr,gs,gt,gu,gv,gw,gx,gy,gz,
-	ha,hb,hc,hd,he,hf,hg,hh,hi,hj,hk,hl,hm,hn,ho,hp,hq,hr,hs,ht,hu,hv,hw,hx,hy,hz,
-	ia,ib,ic,id,ie,if,ig,ih,ii,ij,ik,il,im,in,io,ip,iq,ir,is,it,iu,iv,iw,ix,iy,iz,
-	ja,jb,jc,jd,je,jf,jg,jh,ji,jj,jk,jl,jm,jn,jo,jp,jq,jr,js,jt,ju,jv,jw,jx,jy,jz,
-	ka,kb,kc,kd,ke,kf,kg,kh,ki,kj,kk,kl,km,kn,ko,kp,kq,kr,ks,kt,ku,kv,kw,kx,ky,kz,
-	la,lb,lc,ld,le,lf,lg,lh,li,lj,lk,ll,lm,ln,lo,lp,lq,lr,ls,lt,lu,lv,lw,lx,ly,lz,
-	ma,mb,mc,md,me,mf,mg,mh,mi,mj,mk,ml,mm,mn,mo,mp,mq,mr,ms,mt,mu,mv,mw,mx,my,mz,
-	na,nb,nc,nd,ne,nf,ng,nh,ni,nj,nk,nl,nm,nn,no,np,nq,nr,ns,nt,nu,nv,nw,nx,ny,nz,
-	oa,ob,oc,od,oe,of,og,oh,oi,oj,ok,ol,om,on,oo,op,oq,or,os,ot,ou,ov,ow,ox,oy,oz,
-	pa,pb,pc,pd,pe,pf,pg,ph,pi,pj,pk,pl,pm,pn,po,pp,pq,pr,ps,pt,pu,pv,pw,px,py,pz,
-	qa,qb,qc,qd,qe,qf,qg,qh,qi,qj,qk,ql,qm,qn,qo,qp,qq,qr,qs,qt,qu,qv,qw,qx,qy,qz,
-	ra,rb,rc,rd,re,rf,rg,rh,ri,rj,rk,rl,rm,rn,ro,rp,rq,rr,rs,rt,ru,rv,rw,rx,ry,rz,
-	sa,sb,sc,sd,se,sf,sg,sh,si,sj,sk,sl,sm,sn,so,sp,sq,sr,ss,st,su,sv,sw,sx,sy,sz,
-	ta,tb,tc,td,te,tf,tg,th,ti,tj,tk,tl,tm,tn,to,tp,tq,tr,ts,tt,tu,tv,tw,tx,ty,tz,
-	ua,ub,uc,ud,ue,uf,ug,uh,ui,uj,uk,ul,um,un,uo,up,uq,ur,us,ut,uu,uv,uw,ux,uy,uz,
-	va,vb,vc,vd,ve,vf,vg,vh,vi,vj,vk,vl,vm,vn,vo,vp,vq,vr,vs,vt,vu,vv,vw,vx,vy,vz,
-	wa,wb,wc,wd,we,wf,wg,wh,wi,wj,wk,wl,wm,wn,wo,wp,wq,wr,ws,wt,wu,wv,ww,wx,wy,wz,
-	xa,xb,xc,xd,xe,xf,xg,xh,xi,xj,xk,xl,xm,xn,xo,xp,xq,xr,xs,xt,xu,xv,xw,xx,xy,xz,
-	ya,yb,yc,yd,ye,yf,yg,yh,yi,yj,yk,yl,ym,yn,yo,yp,yq,yr,ys,yt,yu,yv,yw,yx,yy,yz,
+  aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az,
+  ba,bb,bc,bd,be,bf,bg,bh,bi,bj,bk,bl,bm,bn,bo,bp,bq,br,bs,bt,bu,bv,bw,bx,by,bz,
+  ca,cb,cc,cd,ce,cf,cg,ch,ci,cj,ck,cl,cm,cn,co,cp,cq,cr,cs,ct,cu,cv,cw,cx,cy,cz,
+  da,db,dc,dd,de,df,dg,dh,di,dj,dk,dl,dm,dn,do,dp,dq,dr,ds,dt,du,dv,dw,dx,dy,dz,
+  ea,eb,ec,ed,ee,ef,eg,eh,ei,ej,ek,el,em,en,eo,ep,eq,er,es,et,eu,ev,ew,ex,ey,ez,
+  fa,fb,fc,fd,fe,ff,fg,fh,fi,fj,fk,fl,fm,fn,fo,fp,fq,fr,fs,ft,fu,fv,fw,fx,fy,fz,
+  ga,gb,gc,gd,ge,gf,gg,gh,gi,gj,gk,gl,gm,gn,go,gp,gq,gr,gs,gt,gu,gv,gw,gx,gy,gz,
+  ha,hb,hc,hd,he,hf,hg,hh,hi,hj,hk,hl,hm,hn,ho,hp,hq,hr,hs,ht,hu,hv,hw,hx,hy,hz,
+  ia,ib,ic,id,ie,if,ig,ih,ii,ij,ik,il,im,in,io,ip,iq,ir,is,it,iu,iv,iw,ix,iy,iz,
+  ja,jb,jc,jd,je,jf,jg,jh,ji,jj,jk,jl,jm,jn,jo,jp,jq,jr,js,jt,ju,jv,jw,jx,jy,jz,
+  ka,kb,kc,kd,ke,kf,kg,kh,ki,kj,kk,kl,km,kn,ko,kp,kq,kr,ks,kt,ku,kv,kw,kx,ky,kz,
+  la,lb,lc,ld,le,lf,lg,lh,li,lj,lk,ll,lm,ln,lo,lp,lq,lr,ls,lt,lu,lv,lw,lx,ly,lz,
+  ma,mb,mc,md,me,mf,mg,mh,mi,mj,mk,ml,mm,mn,mo,mp,mq,mr,ms,mt,mu,mv,mw,mx,my,mz,
+  na,nb,nc,nd,ne,nf,ng,nh,ni,nj,nk,nl,nm,nn,no,np,nq,nr,ns,nt,nu,nv,nw,nx,ny,nz,
+  oa,ob,oc,od,oe,of,og,oh,oi,oj,ok,ol,om,on,oo,op,oq,or,os,ot,ou,ov,ow,ox,oy,oz,
+  pa,pb,pc,pd,pe,pf,pg,ph,pi,pj,pk,pl,pm,pn,po,pp,pq,pr,ps,pt,pu,pv,pw,px,py,pz,
+  qa,qb,qc,qd,qe,qf,qg,qh,qi,qj,qk,ql,qm,qn,qo,qp,qq,qr,qs,qt,qu,qv,qw,qx,qy,qz,
+  ra,rb,rc,rd,re,rf,rg,rh,ri,rj,rk,rl,rm,rn,ro,rp,rq,rr,rs,rt,ru,rv,rw,rx,ry,rz,
+  sa,sb,sc,sd,se,sf,sg,sh,si,sj,sk,sl,sm,sn,so,sp,sq,sr,ss,st,su,sv,sw,sx,sy,sz,
+  ta,tb,tc,td,te,tf,tg,th,ti,tj,tk,tl,tm,tn,to,tp,tq,tr,ts,tt,tu,tv,tw,tx,ty,tz,
+  ua,ub,uc,ud,ue,uf,ug,uh,ui,uj,uk,ul,um,un,uo,up,uq,ur,us,ut,uu,uv,uw,ux,uy,uz,
+  va,vb,vc,vd,ve,vf,vg,vh,vi,vj,vk,vl,vm,vn,vo,vp,vq,vr,vs,vt,vu,vv,vw,vx,vy,vz,
+  wa,wb,wc,wd,we,wf,wg,wh,wi,wj,wk,wl,wm,wn,wo,wp,wq,wr,ws,wt,wu,wv,ww,wx,wy,wz,
+  xa,xb,xc,xd,xe,xf,xg,xh,xi,xj,xk,xl,xm,xn,xo,xp,xq,xr,xs,xt,xu,xv,xw,xx,xy,xz,
+  ya,yb,yc,yd,ye,yf,yg,yh,yi,yj,yk,yl,ym,yn,yo,yp,yq,yr,ys,yt,yu,yv,yw,yx,yy,yz,
     za,zb,zc,zd,ze,zf,zg,zh,zi,zj,zk,zl,zm,zn,zo,zp,zq,zr,zs,zt,zu,zv,zw,zx,zy,zz]).
 
-digit(0) --> [""].
+digit(0) --> ["zero"].
 digit(1) --> ["one"].
 digit(2) --> ["two"].
 digit(3) --> ["three"].
@@ -151,6 +153,8 @@ ten(70) --> ["seventy"].
 ten(80) --> ["eighty"].
 ten(90) --> ["ninety"].
 
+
+%Generates a number between 1000 and 9999
 tnum(N) --> trinum(R),
             {N is R}.
 tnum(N) --> trinum(M), ["thousand"],
@@ -158,6 +162,7 @@ tnum(N) --> trinum(M), ["thousand"],
 tnum(N) --> trinum(M), ["thousand"], trinum(R),
             {N is M*1000+R}.
 
+%Generates a number between 100 and 999
 trinum(N) --> twonum(DU),
               {N is DU}.
 trinum(N) --> digit(C), ["hundred"],
@@ -165,6 +170,7 @@ trinum(N) --> digit(C), ["hundred"],
 trinum(N) --> digit(C), ["hundred"], twonum(DU),
               {N is C*100+DU}.
 
+%Generates a number between 0 and 99
 twonum(N) --> ten(D), digit(U),
               {N is D+U}.
 twonum(N) --> ten(D),
@@ -174,89 +180,90 @@ twonum(N) --> teen(D),
 twonum(N) --> digit(U),
               {N is U}.
 
-number2string(N,S) :- tnum(N,S,[]), !.
+%Converts a number represented by a string to a real number
+number2string(Number,String) :- tnum(Number,String,[]), !.
 
+%Checks if a variable belongs to the list of valid variables
+belongs(VarS) :- variables(List), (string(VarS) , atom_string(Var,VarS); Var = VarS), member(Var,List), !.
 
+%Converts a string to the polynomial that it represents
+text2poly(String,Poly) :- split_string(String," ","",List), expr(Poly,List,[]), !.
 
-belongs(X) :- variables(V), (string(X) , atom_string(X2,X); X2 = X), member(X2,V), !.
-
-
+%Prints the list of operations given by the user's input
 print([]).
-print([X|L]) :- X==".", writeln(""), !, print(L).
-print([X|L]) :- (X=="";write(X)) , print(L).
+print([Op|List]) :- Op==".", writeln(""), !, print(List).
+print([Op|List]) :- (Op=="";write(Op)) , print(List).
 
-
+%Pritns the list of variables stored in memory
 writeList([]).
-writeList([[X,Y]|L2]) :- write(X), write(" = "), writeln(Y), writeList(L2).
+writeList([[ID,Poly]|List]) :- write(ID), write(" = "), writeln(Poly), writeList(List).
 
-
-polyNameUsed(X) :- polynomials(X,_), write(X), writeln(" is used").
+%In case a variable is already in memory, it prints an error
+polyNameUsed(ID) :- polynomials(ID,_), write(ID), writeln(" is used").
 
 group(L) --> [X], {L = [X]}.
 group(L) --> [A], group(B), {append([A],B,L)}.
 
+start(String) :- split_string(String," ","",ListS), list(ListS,[]), !.
 
-
-start(S) :- split_string(S," ","",S2), list(S2,[]), !.
-
-
+%Generates the list of operations
 list --> group(L1), ["and"], {parse(L,L1,[]), print(L)}, list.
 list --> parse(L), {print(L)}.
 
-
+%Part of the grammar that identifies the type of operation
 parse(L) --> ["show"], ["variables"],
-             {findall([ID,P], polynomials(ID,P),L1), writeList(L1), L=[""]}.
+             {findall([ID,Poly], polynomials(ID,Poly),L1), writeList(L1), L=[""]}.
 parse(L) --> ["forget"], [ID],
              {retract(polynomials(ID,_)), L=[""];
              append(["It doesn't exists"],["."],L)}.
-parse(L) --> cmd(R), ["as"], [ID],
-             {polyNameUsed(ID), !; assertz(polynomials(ID,R)),
-             append([ID],[" = "],L1), append(L1,[R],L2), append(L2,["."],L), !}.
-parse(L) --> cmd(R),
-             {append([R],["."],L), !}.
+parse(L) --> cmd(Poly), ["as"], [ID],
+             {polyNameUsed(ID), !; assertz(polynomials(ID,Poly)),
+             append([ID],[" = "],L1), append(L1,[Poly],L2), append(L2,["."],L), !}.
+parse(L) --> cmd(Poly),
+             {append([Poly],["."],L), !}.
+
+%Part of the grammar that identifies the type of operation within the operations with polynomials
+cmd(Poly) --> ["show"], expr(Poly).
+cmd(PolySimp) --> ["simplify"], expr(Poly),
+              {simpoly(Poly,PolySimp)}.
+cmd(PolySum) --> ["add"], expr(Poly1), ["to"], expr(Poly2),
+           {addpoly(Poly1,Poly2,PolySum)}.
+cmd(PolyMul) --> ["multiply"], group(Factor), ["by"], expr(Poly1),
+           {number2string(Num,Factor), scalepoly(Poly1,Num,PolyMul)}.
+
+%Part of the grammar that builds the polynomail.
+expr(Poly) --> term(T1), ["plus"], expr(T2),
+              {Poly = T2+T1}.
+expr(Poly) --> term(T1), ["minus"], expr(T2),
+            {Poly = T2-T1}.
+expr(Poly) --> term(Poly).
 
 
-cmd(X) --> ["show"], expr(X).
-cmd(X) --> ["simplify"], expr(X1),
-           {simpoly(X1,X)}.
-cmd(X) --> ["add"], expr(X1), ["to"], expr(X2),
-           {addpoly(X1,X2,X)}.
-cmd(X) --> ["multiply"], group(K), ["by"], expr(X1),
-           {number2string(N,K), scalepoly(X1,N,X)}.
+term(Poly) --> group(NumS), ["times"], raised(Exp),
+              {number2string(NumR,NumS), Poly = NumR*Exp}.
+term(Poly) --> group(NumS), raised(Exp),
+              {number2string(NumR,NumS), Poly = NumR*Exp}.
+term(Poly) --> raised(Poly).
+term(Poly) --> group(NumS),
+              {number2string(Poly,NumS)}.
+term(Poly) --> [ID],
+              {polynomials(ID,Poly)}.
 
 
-expr(X) --> term(X1), ["plus"], expr(X2),
-            {X = X2+X1}.
-expr(X) --> term(X1), ["minus"], expr(X2),
-            {X = X2-X1}.
-expr(X) --> term(X).
-
-
-term(X) --> group(X1), ["times"], raised(X2),
-            {number2string(N,X1), X = N*X2}.
-term(X) --> group(X1), raised(X2),
-            {number2string(N,X1), X = N*X2}.
-term(X) --> raised(X).
-term(X) --> group(X1),
-            {number2string(X,X1)}.
-term(P) --> [X],
-            {polynomials(X,P)}.
-
-
-raised(X) --> [X2], ["raised"], ["to"], group(X3),
-              {belongs(X2), atom_string(V,X2), number2string(N,X3), X = V^N}.
-raised(X) --> [X2], ["squared"],
-              {belongs(X2), atom_string(V,X2), X = V^2}.
-raised(X) --> [X2], ["cubed"],
-              {belongs(X2), atom_string(V,X2), X = V^3}.
-raised(X) --> [X2],
-              {belongs(X2), atom_string(V,X2), X = V}.
+raised(Term) --> [VarS], ["raised"], ["to"], group(NumS),
+              {belongs(VarS), atom_string(Var,VarS), number2string(NumR,NumS), Term = Var^NumR}.
+raised(Term) --> [VarS], ["squared"],
+              {belongs(VarS), atom_string(Var,VarS), Term = Var^2}.
+raised(Term) --> [VarS], ["cubed"],
+              {belongs(VarS), atom_string(Var,VarS), Term = Var^3}.
+raised(Term) --> [VarS],
+              {belongs(VarS), atom_string(Var,VarS), Term = Var}.
 
 
 
 polyplay :- retractall(polynomials(_,_)), polyplay_aux, !.
 
-polyplay_aux :- writeln("Your operation:"), flush_output, read_string(user_input, "\n", " ", _, X),
-                ((X \= "leave", start(X), polyplay_aux);
-                (X == "leave", writeln("Goodbye"))).
+polyplay_aux :- writeln("Your operation:"), flush_output, read_string(user_input, "\n", " ", _, Input),
+                ((Input \= "leave", start(Input), polyplay_aux);
+                (Input == "leave", writeln("Goodbye"))).
 
