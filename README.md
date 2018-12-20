@@ -56,12 +56,12 @@ There are 2 main predicates:
             Your operation:
             |: show polynomials
             P1 = 2*x
-            P2 = 5*x
+            P2 = 5*x+5*x
             Your operation:
             |: forget P1
             Your operation:
             |: show variables
-            P2 = 5*x
+            P2 = 5*x+5*x
             Your operation:
             |: leave
             Goodbye
