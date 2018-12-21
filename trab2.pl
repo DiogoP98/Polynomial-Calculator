@@ -175,7 +175,8 @@ onenum(N) --> digit(D),
               {N is D}.
 
 %Checks if a variable belongs to the list of valid variables
-belongs(VarS) :- variables(List), (string(VarS) , atom_string(Var,VarS); Var = VarS), member(Var,List), !.
+belongs(VarS) :- variables(List), (string(VarS), atom_string(Var,VarS);
+                 Var=VarS), member(Var,List), !.
 
 %Converts a string to the polynomial that it represents
 text2poly(String,Poly) :- split_string(String," ","",List), expr(Poly,List,[]), !.
@@ -187,7 +188,8 @@ print([Op|List]) :- (Op=="";write(Op)) , print(List).
 
 %Pritns the list of variables stored in memory
 writeList([]).
-writeList([[ID,Poly]|List]) :- write(ID), write(" = "), writeln(Poly), writeList(List).
+writeList([[ID,Poly]|List]) :- write(ID), write(" = "), writeln(Poly),
+                               writeList(List).
 
 %In case a variable is already in memory, it prints an error
 polyNameUsed(ID) :- polynomials(ID,_), write(ID), writeln(" is already being used").
@@ -202,8 +204,9 @@ andl --> [].
 
 %Part of the grammar that identifies the type of operation
 parse(L) --> ["show"], ["polynomials"],
-             {(findall([ID,Poly], polynomials(ID,Poly),L1), (L1 = [], writeln("No polynomials stored in memory."), writeln("");
-             writeList(L1), L=[]))}.
+             {(findall([ID,Poly], polynomials(ID,Poly),L1),
+             (L1 = [], writeln("No polynomials stored in memory."),
+             writeln(""); writeList(L1), L=[]))}.
 parse(L) --> ["forget"], [ID],
              {retract(polynomials(ID,_)), L=[];
              append(["It doesn't exist"],["."],L)}.
@@ -231,35 +234,35 @@ expr(Poly) --> term(T1), ["minus"], expr(T2),
                append(L1,L2,L3), poly2list(Poly,L3)}.           
 expr(Poly) --> term(Poly).
 
-term(Poly) --> ["minus"], num(Num), ["times"], raised(Exp),
-              {Num2 is (-1)*Num, Poly = Num2*Exp}.
-term(Poly) --> num(Num), ["times"], raised(Exp),
-              {Poly = Num*Exp}.
-term(Poly) --> ["minus"], num(Num), raised(Exp),
-              {Num2 is (-1)*Num, Poly = Num2*Exp}.
-term(Poly) --> num(Num), raised(Exp),
-              {Poly = Num*Exp}.
+term(Poly)  --> ["minus"], num(Num), ["times"], raised(Exp),
+                {Num2 is (-1)*Num, Poly = Num2*Exp}.
+term(Poly)  --> num(Num), ["times"], raised(Exp),
+                {Poly = Num*Exp}.
+term(Poly)  --> ["minus"], num(Num), raised(Exp),
+                {Num2 is (-1)*Num, Poly = Num2*Exp}.
+term(Poly)  --> num(Num), raised(Exp),
+                {Poly = Num*Exp}.
 term(PolyN) --> ["minus"], raised(Poly), {PolyN = -Poly}.
-term(Poly) --> raised(Poly).
-term(Poly) --> ["minus"], num(Num),
-              {Poly is -Num}.
-term(Poly) --> num(Num),
-              {Poly is Num}.
+term(Poly)  --> raised(Poly).
+term(Poly)  --> ["minus"], num(Num),
+                {Poly is -Num}.
+term(Poly)  --> num(Num),
+                {Poly is Num}.
 term(PolyN) --> ["minus"], [ID],
-              {polynomials(ID,Poly), poly2list(Poly,L1),
-              scalepoly2(L1,-1,L2), cutK(L2,L3), poly2list(PolyN,L3)}.
-term(Poly) --> [ID],
-              {polynomials(ID,Poly)}.
+                {polynomials(ID,Poly), poly2list(Poly,L1),
+                scalepoly2(L1,-1,L2), cutK(L2,L3), poly2list(PolyN,L3)}.
+term(Poly)  --> [ID],
+                {polynomials(ID,Poly)}.
 
 
 raised(Term) --> [VarS], ["raised"], ["to"], num(Num),
-              {belongs(VarS), atom_string(Var,VarS), Term = Var^Num}.
+                 {belongs(VarS), atom_string(Var,VarS), Term = Var^Num}.
 raised(Term) --> [VarS], ["squared"],
-              {belongs(VarS), atom_string(Var,VarS), Term = Var^2}.
+                 {belongs(VarS), atom_string(Var,VarS), Term = Var^2}.
 raised(Term) --> [VarS], ["cubed"],
-              {belongs(VarS), atom_string(Var,VarS), Term = Var^3}.
+                 {belongs(VarS), atom_string(Var,VarS), Term = Var^3}.
 raised(Term) --> [VarS],
-              {belongs(VarS), atom_string(Var,VarS), Term = Var}.
+                 {belongs(VarS), atom_string(Var,VarS), Term = Var}.
 
 num(Num) --> trinum(N1), ["point"], float(N2), {Num is float(N1+N2)}.
 num(Num) --> trinum(N), {Num is N}.
@@ -281,13 +284,13 @@ polyplay_aux :- writeln("Your operation:"), flush_output, read_string(user_input
                 (Input == "leave", writeln("Goodbye"))).
 
 print_welcome :- write('\e[H\e[2J'), 
-                writeln("Welcome to this wonderful polynomial calculator"),
-                writeln(""),
-                writeln("If you need help just type: 'help'"),
-                writeln("If you need to leave, just type: 'leave'"),
-                writeln(""),
-                writeln("Hope you enjoy it!"),
-                writeln("").
+                 writeln("Welcome to this wonderful polynomial calculator"),
+                 writeln(""),
+                 writeln("If you need help just type: 'help'"),
+                 writeln("If you need to leave, just type: 'leave'"),
+                 writeln(""),
+                 writeln("Hope you enjoy it!"),
+                 writeln("").
 
 print_help :- writeln("Manual:"),
               writeln("   -show P: shows the polynomial given as output."),
