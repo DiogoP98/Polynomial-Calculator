@@ -14,7 +14,7 @@ swipl
 
 In swipl, first you need to import the program so that you can use the predicates implemented:
 ```bash
-['trab2.pl'].
+['Polynomials.pl'].
 ```
 
 ## Description of the program
