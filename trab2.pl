@@ -151,13 +151,6 @@ ten(70) --> ["seventy"].
 ten(80) --> ["eighty"].
 ten(90) --> ["ninety"].
 
-
-%Generates a number between 1000 and 9999
-tnum(N) --> trinum(M), ["thousand"],
-            {N is M*1000}.
-tnum(N) --> trinum(M), ["thousand"], trinum(R),
-            {N is M*1000+R}.
-
 %Generates a number between 100 and 999
 trinum(N) --> digit(C), ["hundred"],
               {N is C*100}.
@@ -253,8 +246,6 @@ raised(Term) --> [VarS], ["cubed"],
 raised(Term) --> [VarS],
               {belongs(VarS), atom_string(Var,VarS), Term = Var}.
 
-num(Num) --> tnum(N1), ["point"], float(N2), {Num is float(N1+N2)}.
-num(Num) --> tnum(N), {Num is N}.
 num(Num) --> trinum(N1), ["point"], float(N2), {Num is float(N1+N2)}.
 num(Num) --> trinum(N), {Num is N}.
 num(Num) --> twonum(N1), ["point"], float(N2), {Num is float(N1+N2)}.
@@ -262,7 +253,6 @@ num(Num) --> twonum(N), {Num is N}.
 num(Num) --> onenum(N1), ["point"], float(N2), {Num is float(N1+N2)}.
 num(Num) --> onenum(N), {Num is N}.
 
-float(Num) --> tnum(N), {Num is N*0.0001}.
 float(Num) --> trinum(N), {Num is N*0.001}.
 float(Num) --> twonum(N), {Num is N*0.01}.
 float(Num) --> onenum(N), {Num is N*0.1}.
