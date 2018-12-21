@@ -227,7 +227,7 @@ cmd(PolyMul) --> ["multiply"], num(Factor), ["by"], expr(Poly1),
 expr(Poly) --> term(T1), ["plus"], expr(T2),
               {Poly = T2+T1}.
 expr(Poly) --> term(T1), ["minus"], expr(T2),
-            {Poly = T2-T1}.
+            {Poly = T1-T2}.
 expr(Poly) --> term(Poly).
 
 
@@ -236,6 +236,8 @@ term(Poly) --> num(Num), ["times"], raised(Exp),
 term(Poly) --> num(Num), raised(Exp),
               {Poly = Num*Exp}.
 term(Poly) --> raised(Poly).
+term(Poly) --> ["minus"], num(Num),
+              {Poly is -Num}.
 term(Poly) --> num(Num),
               {Poly is Num}.
 term(Poly) --> [ID],
