@@ -157,16 +157,12 @@ tnum(N) --> trinum(M), ["thousand"],
             {N is M*1000}.
 tnum(N) --> trinum(M), ["thousand"], trinum(R),
             {N is M*1000+R}.
-tnum(N) --> trinum(R),
-            {N is R}.
 
 %Generates a number between 100 and 999
 trinum(N) --> digit(C), ["hundred"],
               {N is C*100}.
 trinum(N) --> digit(C), ["hundred"], twonum(DU),
               {N is C*100+DU}.
-trinum(N) --> twonum(DU),
-              {N is DU}.
 
 %Generates a number between 0 and 99
 twonum(N) --> ten(D), digit(U),
@@ -175,8 +171,9 @@ twonum(N) --> ten(D),
               {N is D}.
 twonum(N) --> teen(D),
               {N is D}.
-twonum(N) --> digit(U),
-              {N is U}.
+
+onenum(N) --> digit(D),
+              {N is D}.
 
 %Checks if a variable belongs to the list of valid variables
 belongs(VarS) :- variables(List), (string(VarS) , atom_string(Var,VarS); Var = VarS), member(Var,List), !.
@@ -252,12 +249,19 @@ raised(Term) --> [VarS], ["cubed"],
 raised(Term) --> [VarS],
               {belongs(VarS), atom_string(Var,VarS), Term = Var}.
 
-num(Num) --> tnum(N1), ["point"], tnum(N2), {Num is float(N1+(N2*0.001))}.
+num(Num) --> tnum(N1), ["point"], float(N2), {Num is float(N1+N2)}.
 num(Num) --> tnum(N), {Num is N}.
-num(Num) --> trinum(N1), ["point"], num(N2), {Num is float(N1+(N2*0.1))}.
+num(Num) --> trinum(N1), ["point"], float(N2), {Num is float(N1+N2)}.
 num(Num) --> trinum(N), {Num is N}.
-num(Num) --> twonum(N1), ["point"], num(N2), {Num is float(N1+(N2*0.1))}.
+num(Num) --> twonum(N1), ["point"], float(N2), {Num is float(N1+N2)}.
 num(Num) --> twonum(N), {Num is N}.
+num(Num) --> onenum(N1), ["point"], float(N2), {Num is float(N1+N2)}.
+num(Num) --> onenum(N), {Num is N}.
+
+float(Num) --> tnum(N), {Num is N*0.0001}.
+float(Num) --> trinum(N), {Num is N*0.001}.
+float(Num) --> twonum(N), {Num is N*0.01}.
+float(Num) --> onenum(N), {Num is N*0.1}.
 
 
 polyplay :- retractall(polynomials(_,_)), print_welcome, polyplay_aux, !.
