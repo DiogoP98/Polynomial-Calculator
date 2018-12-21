@@ -196,19 +196,21 @@ polyNameUsed(ID) :- polynomials(ID,_), write(ID), writeln(" is already being use
 start(String) :- split_string(String," ","",ListS), list(ListS,[]), !.
 
 %Generates the list of operations
-list --> parse(L), ["and"], {print(L)}, list.
-list --> parse(L), {print(L)}.
+list --> parse(L),{print(L)}, andl.
+
+andl --> ["and"], list.
+andl --> [].
 
 %Part of the grammar that identifies the type of operation
 parse(L) --> ["show"], ["polynomials"],
              {(findall([ID,Poly], polynomials(ID,Poly),L1), (L1 = [], writeln("No polynomials stored in memory."), writeln("");
              writeList(L1), L=[]))}.
 parse(L) --> ["forget"], [ID],
-             {retract(polynomials(ID,_)), L=[""];
+             {retract(polynomials(ID,_)), L=[];
              append(["It doesn't exist"],["."],L)}.
 parse(L) --> cmd(Poly), ["as"], [ID],
-             {(polyNameUsed(ID), !; (assertz(polynomials(ID,Poly)),
-             append([ID],[" = "],L1), append(L1,[Poly],L2), append(L2,["."],L), !))}.
+             {polyNameUsed(ID), !; assertz(polynomials(ID,Poly)),
+             append([ID],[" = "],L1), append(L1,[Poly],L2), append(L2,["."],L), !}.
 parse(L) --> cmd(Poly),
              {append([Poly],["."],L), !}.
 
