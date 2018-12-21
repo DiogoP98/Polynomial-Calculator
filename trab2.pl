@@ -75,10 +75,13 @@ simpoly(P,P2) :- poly2list(P,L), simpoly_list(L,L2), poly2list(P2,L2).
 
 %Multiplies a polynomial by a constant. It returns a simplified polynomial
 scalepoly2([],_,[]).
-scalepoly2([M|P],F,[M2|P2]) :- split(M,N,Po), N2 is N*F, M2=N2*Po,
+scalepoly2([M|P],F,[M2|P2]) :- split(M,N,Po), N2 is N*F, (Po=ind,M2=N2;M2=N2*Po),
                                scalepoly2(P,F,P2).
 scalepoly(P,F,P2) :- poly2list(P,P3), simpoly_list(P3,P4),
                      scalepoly2(P4,F,P5), simpoly_list(P5,P6), poly2list(P2,P6).
+scalepoly4([],_,[]).
+scalepoly4([M|P],F,[M2|P]) :- split(M,N,Po), N2 is N*F, (Po=ind,M2=N2;M2=N2*Po).
+scalepoly3(P,F,P2) :- poly2list(P,P3), scalepoly4(P3,F,P4), poly2list(P2,P4).
 
 %Auxiliar function to addpoly. It appends 2 lists, in this case, 2 polynomials
 append([], L, L).
@@ -211,27 +214,29 @@ parse(L) --> cmd(Poly),
              {append([Poly],["."],L), !}.
 
 %Part of the grammar that identifies the type of operation within the operations with polynomials
-cmd(Poly) --> ["show"], expr(Poly).
+cmd(Poly)     --> ["show"], expr(Poly).
 cmd(PolySimp) --> ["simplify"], expr(Poly),
-              {simpoly(Poly,PolySimp)}.
-cmd(PolySum) --> ["add"], expr(Poly1), ["to"], expr(Poly2),
-           {addpoly(Poly1,Poly2,PolySum)}.
-cmd(PolyMul) --> ["multiply"], num(Factor), ["by"], expr(Poly1),
-           {scalepoly(Poly1,Factor,PolyMul)}.
+                  {simpoly(Poly,PolySimp)}.
+cmd(PolySum)  --> ["add"], expr(Poly1), ["to"], expr(Poly2),
+                  {addpoly(Poly1,Poly2,PolySum)}.
+cmd(PolyMul)  --> ["multiply"], num(Factor), ["by"], expr(Poly1),
+                  {scalepoly(Poly1,Factor,PolyMul)}.
 
 %Part of the grammar that builds the polynomail.
 expr(Poly) --> term(T1), ["plus"], expr(T2),
-              {Poly = T2+T1}.
+               {poly2list(T1,L1), poly2list(T2,L2),
+               append(L1,L2,L3), poly2list(Poly,L3)}.
 expr(Poly) --> term(T1), ["minus"], expr(T2),
-            {Poly = T1-T2}.           
+               {poly2list(T1,L1), scalepoly3(T2,-1,T3), poly2list(T3,L2),
+               append(L1,L2,L3), poly2list(Poly,L3)}.           
 expr(Poly) --> term(Poly).
 
 term(Poly) --> ["minus"], num(Num), ["times"], raised(Exp),
-              {Poly = -Num*Exp}.
+              {Num2 is (-1)*Num, Poly = Num2*Exp}.
 term(Poly) --> num(Num), ["times"], raised(Exp),
               {Poly = Num*Exp}.
 term(Poly) --> ["minus"], num(Num), raised(Exp),
-              {Poly = -(Num*Exp)}.
+              {Num2 is (-1)*Num, Poly = Num2*Exp}.
 term(Poly) --> num(Num), raised(Exp),
               {Poly = Num*Exp}.
 term(PolyN) --> ["minus"], raised(Poly), {PolyN = -Poly}.
@@ -241,7 +246,8 @@ term(Poly) --> ["minus"], num(Num),
 term(Poly) --> num(Num),
               {Poly is Num}.
 term(PolyN) --> ["minus"], [ID],
-              {polynomials(ID,Poly), PolyN = -(Poly)}.
+              {polynomials(ID,Poly), poly2list(Poly,L1),
+              scalepoly2(L1,-1,L2), cutK(L2,L3), poly2list(PolyN,L3)}.
 term(Poly) --> [ID],
               {polynomials(ID,Poly)}.
 
