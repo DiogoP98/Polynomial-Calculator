@@ -1,4 +1,4 @@
-# Polynomials
+# Polynomial-Calculator
 
 A prolog program that allows the user to input verbal actions with polynomials that gives as output a polynomial
 representative of the input that the user gave.
@@ -99,6 +99,7 @@ There are 2 main predicates:
                
  ## Authors
  
-   Diogo Pereira 201605323
-   
-   Ricardo Pereira 201604583
+| Name              | UP number     |
+| ----------------- | ------------- |
+| Diogo Pereira     | 201605323     |
+| Ricardo Pereira   | 201604583     |
