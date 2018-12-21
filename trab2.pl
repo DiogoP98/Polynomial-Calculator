@@ -153,20 +153,20 @@ ten(90) --> ["ninety"].
 
 
 %Generates a number between 1000 and 9999
-tnum(N) --> trinum(R),
-            {N is R}.
 tnum(N) --> trinum(M), ["thousand"],
             {N is M*1000}.
 tnum(N) --> trinum(M), ["thousand"], trinum(R),
             {N is M*1000+R}.
+tnum(N) --> trinum(R),
+            {N is R}.
 
 %Generates a number between 100 and 999
-trinum(N) --> twonum(DU),
-              {N is DU}.
 trinum(N) --> digit(C), ["hundred"],
               {N is C*100}.
 trinum(N) --> digit(C), ["hundred"], twonum(DU),
               {N is C*100+DU}.
+trinum(N) --> twonum(DU),
+              {N is DU}.
 
 %Generates a number between 0 and 99
 twonum(N) --> ten(D), digit(U),
@@ -178,9 +178,6 @@ twonum(N) --> teen(D),
 twonum(N) --> digit(U),
               {N is U}.
 
-%Converts a number represented by a string to a real number
-number2string(Number,String) :- tnum(Number,String,[]), !.
-
 %Checks if a variable belongs to the list of valid variables
 belongs(VarS) :- variables(List), (string(VarS) , atom_string(Var,VarS); Var = VarS), member(Var,List), !.
 
@@ -188,8 +185,9 @@ belongs(VarS) :- variables(List), (string(VarS) , atom_string(Var,VarS); Var = V
 text2poly(String,Poly) :- split_string(String," ","",List), expr(Poly,List,[]), !.
 
 %Prints the list of operations given by the user's input
-print("").
-print(S) :- writeln(S).
+print([]).
+print([Op|List]) :- Op==".", writeln(""), !, print(List).
+print([Op|List]) :- (Op=="";write(Op)) , print(List).
 
 %Pritns the list of variables stored in memory
 writeList([]).
@@ -198,29 +196,24 @@ writeList([[ID,Poly]|List]) :- write(ID), write(" = "), writeln(Poly), writeList
 %In case a variable is already in memory, it prints an error
 polyNameUsed(ID) :- polynomials(ID,_), write(ID), writeln(" is already being used").
 
-group(L) --> [X], {L = [X]}.
-group(L) --> [A], group(B), {append([A],B,L)}.
-
 start(String) :- split_string(String," ","",ListS), list(ListS,[]), !.
 
 %Generates the list of operations
-list --> group(L1), ["and"], {parse(L,L1,[]), print(L)}, list.
-list --> group(L1), ["."], {parse(L,L1,[]), print(L)}.
+list --> parse(L), ["and"], {print(L)}, list.
+list --> parse(L), {print(L)}.
 
 %Part of the grammar that identifies the type of operation
 parse(L) --> ["show"], ["polynomials"],
              {(findall([ID,Poly], polynomials(ID,Poly),L1), (L1 = [], writeln("No polynomials stored in memory."), writeln("");
-             writeList(L1), L=""))}.
+             writeList(L1), L=[]))}.
 parse(L) --> ["forget"], [ID],
-             {retract(polynomials(ID,_)), L="";
-             L="It doesn't exist"}.
+             {retract(polynomials(ID,_)), L=[""];
+             append(["It doesn't exist"],["."],L)}.
 parse(L) --> cmd(Poly), ["as"], [ID],
-             {polyNameUsed(ID), !; assertz(polynomials(ID,Poly)),
-             string_concat(ID," = ",L1), (string(Poly),Poly2=Poly;
-             term_to_atom(Poly,A),atom_string(A,Poly2)),
-             string_concat(L1,Poly2,L)}.
+             {(polyNameUsed(ID), !; (assertz(polynomials(ID,Poly)),
+             append([ID],[" = "],L1), append(L1,[Poly],L2), append(L2,["."],L), !))}.
 parse(L) --> cmd(Poly),
-             {L = Poly}.
+             {append([Poly],["."],L), !}.
 
 %Part of the grammar that identifies the type of operation within the operations with polynomials
 cmd(Poly) --> ["show"], expr(Poly).
@@ -228,8 +221,8 @@ cmd(PolySimp) --> ["simplify"], expr(Poly),
               {simpoly(Poly,PolySimp)}.
 cmd(PolySum) --> ["add"], expr(Poly1), ["to"], expr(Poly2),
            {addpoly(Poly1,Poly2,PolySum)}.
-cmd(PolyMul) --> ["multiply"], group(Factor), ["by"], expr(Poly1),
-           {number2string(Num,Factor), scalepoly(Poly1,Num,PolyMul)}.
+cmd(PolyMul) --> ["multiply"], num(Factor), ["by"], expr(Poly1),
+           {scalepoly(Poly1,Factor,PolyMul)}.
 
 %Part of the grammar that builds the polynomail.
 expr(Poly) --> term(T1), ["plus"], expr(T2),
@@ -239,25 +232,32 @@ expr(Poly) --> term(T1), ["minus"], expr(T2),
 expr(Poly) --> term(Poly).
 
 
-term(Poly) --> group(NumS), ["times"], raised(Exp),
-              {number2string(NumR,NumS), Poly = NumR*Exp}.
-term(Poly) --> group(NumS), raised(Exp),
-              {number2string(NumR,NumS), Poly = NumR*Exp}.
+term(Poly) --> num(Num), ["times"], raised(Exp),
+              {Poly = Num*Exp}.
+term(Poly) --> num(Num), raised(Exp),
+              {Poly = Num*Exp}.
 term(Poly) --> raised(Poly).
-term(Poly) --> group(NumS),
-              {number2string(Poly,NumS)}.
+term(Poly) --> num(Num),
+              {Poly is Num}.
 term(Poly) --> [ID],
               {polynomials(ID,Poly)}.
 
 
-raised(Term) --> [VarS], ["raised"], ["to"], group(NumS),
-              {belongs(VarS), atom_string(Var,VarS), number2string(NumR,NumS), Term = Var^NumR}.
+raised(Term) --> [VarS], ["raised"], ["to"], num(Num),
+              {belongs(VarS), atom_string(Var,VarS), Term = Var^Num}.
 raised(Term) --> [VarS], ["squared"],
               {belongs(VarS), atom_string(Var,VarS), Term = Var^2}.
 raised(Term) --> [VarS], ["cubed"],
               {belongs(VarS), atom_string(Var,VarS), Term = Var^3}.
 raised(Term) --> [VarS],
               {belongs(VarS), atom_string(Var,VarS), Term = Var}.
+
+num(Num) --> tnum(N1), ["point"], tnum(N2), {Num is float(N1+(N2*0.001))}.
+num(Num) --> tnum(N), {Num is N}.
+num(Num) --> trinum(N1), ["point"], num(N2), {Num is float(N1+(N2*0.1))}.
+num(Num) --> trinum(N), {Num is N}.
+num(Num) --> twonum(N1), ["point"], num(N2), {Num is float(N1+(N2*0.1))}.
+num(Num) --> twonum(N), {Num is N}.
 
 
 polyplay :- retractall(polynomials(_,_)), print_welcome, polyplay_aux, !.
