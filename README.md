@@ -38,30 +38,28 @@ There are 2 main predicates:
    
             ?- polyplay.
             Your operation:
-            |: show two times x as P1 and show five times x plus five times x as P2 .
-            P1 = 2*x
-            P2 = 5*x+5*x
+            |: show five point one times x plus five x as P1 and show ten y squared as P2
+            P1 = 5*x+5.1*x
+            P2 = 10*y^2
             Your operation:
-            |: simplify P2 .
-            10*x
+            |: simplify P1
+            10.1*x
             Your operation:
-            |: add two times x squared to five times x raised to two plus five times y .
-            7*x^2+5*y
+            |: add twenty one times x plus five hundred y squared to five x plus ten times y raised to two
+            510*y^2+26*x
             Your operation:
-            |: multiply ten by twenty five times x plus five .
-            50+250*x
+            |: add ten times x plus five times y cubed to five times y squared plus five
+            5*y^3+10*x+5+5*y^2
             Your operation:
-            |: show ten as P1 .
-            P1 is used
+            |: multiply ten by P2
+            100*y^2
             Your operation:
-            |: show polynomials .
-            P1 = 2*x
-            P2 = 5*x+5*x
+            |: show polynomials
+            P1 = 5*x+5.1*x
+            P2 = 10*y^2
             Your operation:
-            |: forget P1 .
-            Your operation:
-            |: show polynomials .
-            P2 = 5*x+5*x
+            |: forget P1 and show polynomials
+            P2 = 10*y^2
             Your operation:
             |: leave
             Goodbye
