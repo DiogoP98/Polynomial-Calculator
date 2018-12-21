@@ -45,8 +45,8 @@ There are 2 main predicates:
             |: simplify P1
             10.1*x
             Your operation:
-            |: add twenty one times x plus five hundred y squared to five x minus ten times y raised to two
-            490*y^2+26*x
+            |: add twenty one times x plus five hundred and twenty one y squared to five x minus ten times x
+            521*y^2+16*x
             Your operation:
             |: add ten times x plus five times y cubed to five times y squared plus five
             5*y^3+10*x+5+5*y^2

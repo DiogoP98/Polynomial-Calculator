@@ -152,10 +152,13 @@ ten(80) --> ["eighty"].
 ten(90) --> ["ninety"].
 
 %Generates a number between 100 and 999
+trinum(N) --> digit(C), ["hundred"], ["and"], onenum(D),
+              {N is C*100+D}.
+trinum(N) --> digit(C), ["hundred"], ["and"], twonum(DU),
+              {N is C*100+DU}.
 trinum(N) --> digit(C), ["hundred"],
               {N is C*100}.
-trinum(N) --> digit(C), ["hundred"], twonum(DU),
-              {N is C*100+DU}.
+
 
 %Generates a number between 0 and 99
 twonum(N) --> ten(D), digit(U),
@@ -220,19 +223,25 @@ cmd(PolyMul) --> ["multiply"], num(Factor), ["by"], expr(Poly1),
 expr(Poly) --> term(T1), ["plus"], expr(T2),
               {Poly = T2+T1}.
 expr(Poly) --> term(T1), ["minus"], expr(T2),
-            {Poly = T1-T2}.
+            {Poly = T1-T2}.           
 expr(Poly) --> term(Poly).
 
-
+term(Poly) --> ["minus"], num(Num), ["times"], raised(Exp),
+              {Poly = -Num*Exp}.
 term(Poly) --> num(Num), ["times"], raised(Exp),
               {Poly = Num*Exp}.
+term(Poly) --> ["minus"], num(Num), raised(Exp),
+              {Poly = -(Num*Exp)}.
 term(Poly) --> num(Num), raised(Exp),
               {Poly = Num*Exp}.
+term(PolyN) --> ["minus"], raised(Poly), {PolyN = -Poly}.
 term(Poly) --> raised(Poly).
 term(Poly) --> ["minus"], num(Num),
               {Poly is -Num}.
 term(Poly) --> num(Num),
               {Poly is Num}.
+term(PolyN) --> ["minus"], [ID],
+              {polynomials(ID,Poly), PolyN = -(Poly)}.
 term(Poly) --> [ID],
               {polynomials(ID,Poly)}.
 
